@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30503.244
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iceCreamflav", "iceCreamflav\iceCreamflav.csproj", "{36700DBD-6A90-4481-8251-AA8C9A078683}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{36700DBD-6A90-4481-8251-AA8C9A078683}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36700DBD-6A90-4481-8251-AA8C9A078683}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36700DBD-6A90-4481-8251-AA8C9A078683}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36700DBD-6A90-4481-8251-AA8C9A078683}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {801DFF29-9E74-4564-9C3D-2FC3D7B71CA3}
+	EndGlobalSection
+EndGlobal
