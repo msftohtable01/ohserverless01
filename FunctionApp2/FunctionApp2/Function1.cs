@@ -15,6 +15,8 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using System.Configuration;
 using System.Text;
 using Microsoft.VisualBasic;
+using System.Collections.ObjectModel;
+using Newtonsoft.Json.Linq;
 
 namespace FunctionApp2
 {
@@ -29,7 +31,12 @@ namespace FunctionApp2
 
             string name = req.Query["name"];
 
-            dynamic dataArray =  await new StreamReader(req.Body).ReadToEndAsync();
+            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            // dynamic dataArray1 = JsonConvert.Deserialize(requestBody);
+            //Collection<payload> dataArray = 
+            Collection<payload> dataArray = JsonConvert.DeserializeObject<Collection<payload>>(requestBody);
+            // Collection<payload> dataArray = await new StreamReader(req.Body).ReadToEndAsync();
+            //Collection<payload> dataArray = JObject.Parse(await new StreamReader(req.Body).ReadToEndAsync());
 
 
             for (var i = 0; i < dataArray.Count; i++)
@@ -41,7 +48,7 @@ namespace FunctionApp2
                 salesheader.salesDate = dataArray[i].salesDate;
                 salesheader.storeLocation = dataArray[i].storeLocation;
                 salesheader.receiptUrl = dataArray[i].receiptUrl;
-              
+
                 if (salesheader.totalCost > 100)
                 {
                     byte[] data;
@@ -50,21 +57,21 @@ namespace FunctionApp2
                     string enc = Convert.ToBase64String(data);
                     string urlenc = HttpUtility.UrlEncode(enc);
                     salesheader.ReceiptImage = urlenc;
-                    await CreateBlob(salesheader.salesNumber, salesheader.ToString(), "high");
+                    await CreateBlob(salesheader.salesNumber, JsonConvert.SerializeObject(salesheader), "high");
 
                     //result = HttpStatusCode.OK;
                 }
                 else
                 {
-                    await CreateBlob(salesheader.salesNumber, salesheader.ToString(), "low");
+                    await CreateBlob(salesheader.salesNumber, JsonConvert.SerializeObject(salesheader), "low");
                 }
 
             }
 
             // string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-       
 
-           
+
+
             string responseMessage = string.IsNullOrEmpty(name)
                 ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
                 : $"Hello, {name}. This HTTP triggered function executed successfully.";
@@ -83,7 +90,8 @@ namespace FunctionApp2
 
             accessKey = ConfigurationManager.AppSettings["StorageAccessKey"];
             accountName = ConfigurationManager.AppSettings["StorageAccountName"];
-            connectionString = "DefaultEndpointsProtocol=https;AccountName=" + accountName + ";AccountKey=" + accessKey + ";EndpointSuffix=core.windows.net";
+            //connectionString = "DefaultEndpointsProtocol=https;AccountName=" + accountName + ";AccountKey=" + accessKey + ";EndpointSuffix=core.windows.net";
+            connectionString = "DefaultEndpointsProtocol=https;AccountName=icecreamhack6;AccountKey=VQ7s6NBksZehiyOINtge7+fGOs7LtmtZ9t86EFdXjGRPIocksjezZ4mZQj8HCEB77RnV+fxtoWXz2UELLFA1Sw==;EndpointSuffix=core.windows.net";
             storageAccount = CloudStorageAccount.Parse(connectionString);
 
             client = storageAccount.CreateCloudBlobClient();
@@ -95,17 +103,18 @@ namespace FunctionApp2
             {
                 container = client.GetContainerReference("receipts");
             }
-           
+
 
             await container.CreateIfNotExistsAsync();
 
             blob = container.GetBlockBlobReference(name);
             blob.Properties.ContentType = "application/json";
 
-            using (Stream stream = new MemoryStream(Encoding.UTF8.GetBytes(data)))
-            {
-                await blob.UploadFromStreamAsync(stream);
-            }
+            //using (Stream stream = new MemoryStream(Encoding.UTF8.GetBytes(data)))
+            // using (Stream stream = new MemoryStreamdata)))
+            // {
+            await blob.UploadTextAsync(data);
+            // }
         }
     }
     public class payload
